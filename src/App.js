@@ -13,6 +13,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 //toast config
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminUpdate from './pages/admin/AdminUpdate';
 
 function App() {
   return (
@@ -22,9 +23,10 @@ function App() {
       <Routes>
         <Route path='/' element={<Homepage />} />
         <Route path='/register' element={<Registerpage />} />
-        <Route path='/login' element={<Loginpage/>} />
+        <Route path='/login' element={<Loginpage />} />
         {/* Admin Routes */}
-        <Route path='/admin/dashboard' element={<AdminDashboard/>}/>
+        <Route path='/admin/dashboard' element={<AdminDashboard />} />
+        <Route path='/admin/update/:id' element={<AdminUpdate />} />
       </Routes>
     </Router>
   );

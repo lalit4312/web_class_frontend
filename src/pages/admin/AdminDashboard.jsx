@@ -1,7 +1,29 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createProductApi, getAllProducts } from "../../apis/Api";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const AdminDashboard = () => {
+
+  // logic for get products
+  const [products, setProducts] = useState([])
+  // Hit API(Get all product) Auto->useEffect(list of products)
+  useEffect(() => {
+    getAllProducts().then((res) => {
+      //success, message, list of products(products)
+      setProducts(res.data.products)
+
+    }).catch((error) => {
+      console.log(error)
+    })
+
+  }, [])
+  console.log(products)
+
+
+  // make a state to save(Array format)
+  // table row ma (productname,productprice,productdescription)
 
   //making a state for product
   const [productName, setProductName] = useState('')
@@ -14,11 +36,49 @@ const AdminDashboard = () => {
   const [previewImage, setpreviewImage] = useState(null)
 
   //function to upload and preview image
-  const handleImageUpload=(event)=>{
+  const handleImageUpload = (event) => {
     //0-File, 1-name, 2-Size
-    const file=event.target.files[0]
+    const file = event.target.files[0]
     setProductImage(file)
     setpreviewImage(URL.createObjectURL(file))
+  }
+
+  //handel submit
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log(productName, productPrice, productCategory, productDescription, productImage)
+
+
+    //make a logical form data
+    const formData = new FormData()
+    formData.append('productName', productName)
+    formData.append('productPrice', productPrice)
+    formData.append('productCategory', productCategory)
+    formData.append('productDescription', productDescription)
+    formData.append('productImage', productImage)
+
+
+    //make a call/request
+    createProductApi(formData).then((res) => {
+      if (res.status === 201) {
+        toast.success(res.data.message)
+      } else {
+        toast.error('something went wrong in frontend!')
+      }
+    }).catch((error) => {
+      if (error.response) {
+        if (error.response.status === 400) {
+          toast.error(error.res.data.message)
+        }
+        //space for 401 error
+      } else if (error.response.status === 500) {
+        toast.error('internal server error')
+      } else {
+        toast.error('no response')
+      }
+
+
+    })
   }
 
 
@@ -66,8 +126,8 @@ const AdminDashboard = () => {
                     {/* Preview Image */}
                     {
                       previewImage && (
-                        <div className=''>
-                          <img src={previewImage} alt="" />
+                        <div className='mb-2'>
+                          <img src={previewImage} alt="preview image" className="img-fluid rounded object-fit-cover mt-3" />
                         </div>
                       )
                     }
@@ -76,7 +136,7 @@ const AdminDashboard = () => {
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
+                  <button onClick={handleSubmit} type="button" class="btn btn-primary">Save changes</button>
                 </div>
               </div>
             </div>
@@ -95,21 +155,25 @@ const AdminDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>
-                <img height={'50px'} width={'50px'} src="https://th.bing.com/th/id/OIP.DVOYr2PK3_6yODtz2S6l3QHaGO?w=236&h=199&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="" />
-              </td>
-              <td>Kids play</td>
-              <td>NPR. 500</td>
-              <td>kids can play</td>
-              <td>Craft</td>
-              <td>
-                <div className="button-group" role='group'>
-                  <button className="btn btn-success">Edit</button>
-                  <button className="btn btn-danger">Delete</button>
-                </div>
-              </td>
-            </tr>
+            {
+              products.map((singleProduct) => (
+                <tr>
+                  <td>
+                    <img height={'50px'} width={'50px'} src={`http://localhost:5000/products/${singleProduct.productImage}`} alt="" />
+                  </td>
+                  <td>{singleProduct.productName}</td>
+                  <td>NPR.{singleProduct.productPrice}</td>
+                  <td>{singleProduct.productCategory}</td>
+                  <td>{singleProduct.productDescription}</td>
+                  <td>
+                    <div className="button-group" role='group'>
+                      <Link to={`/admin/update/${singleProduct._id}`} className="btn btn-success">Edit</Link>
+                      <Link className="btn btn-danger">Delete</Link>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            }
           </tbody>
         </div>
       </div>
@@ -118,3 +182,19 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+
+// products (array) [{pp1,pn1},{pp2,pn2}]
+// Array mapping (Table format ma)
+// products(product) vitra->pp1
+// pp1(product)
+
+//1. new page(Update Product)
+//2. Form (required fields hunu paryo) name,price,description,category,old image, new image
+//3. useState 7 ota hunxan
+//4. fill the previous values
+//5. call the API(Single product)
+//5.1 Backend
+//5.2 Based on _id(Admin Dashboard)
+// transport '_id' to update product samma pugaunu paryo
+// receive in update product page
