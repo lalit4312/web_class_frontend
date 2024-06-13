@@ -4,7 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
+    //get user data
     const user = JSON.parse(localStorage.getItem('user'));
+
+    // logout function
+    const handelLogout = () => {
+        localStorage.clear()
+        window.location.href = '/login'
+    }
     return (
         <>
             <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -34,7 +41,7 @@ const Navbar = () => {
 
                                                 <FontAwesomeIcon icon={faUser} className="me-2" />Profile</a></li>
                                             <li><a className="dropdown-item" href="#">Settings</a></li>
-                                            <li><a className="dropdown-item" href="#">Logout</a></li>
+                                            <li><button onClick={handelLogout} className="dropdown-item" href="#">Logout</button></li>
                                         </ul>
                                     </div>
                                 ) : (

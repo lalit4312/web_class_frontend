@@ -1,8 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { singleProductApi } from '../../apis/Api';
 
 const AdminUpdate = () => {
     // get id from url
+    const { id } = useParams()
+
     // get product information (Backend)
+    useEffect(() => {
+        singleProductApi(id).then((res) => {
+            console.log(res.data);
+            setProductName(res.data.product.productName)
+            setProductPrice(res.data.product.productPrice)
+            setProductCategory(res.data.product.productCategory)
+            setProductDescription(res.data.product.productDescription)
+            setOldImage(res.data.product.productImage)
+
+        }).catch((error) => {
+            console.log(error)
+        })
+    }, [])
+
     // fill all the info in each fields
 
     // make a use state
@@ -25,11 +43,6 @@ const AdminUpdate = () => {
 
 
 
-
-
-
-
-
     return (
         <>
             <div className='container mt-3'>
@@ -39,13 +52,13 @@ const AdminUpdate = () => {
                 <div className='d-flex gap-3'>
                     <form action="">
                         <label htmlFor="">Product Name</label>
-                        <input onChange={(e) => setProductName(e.target.value)} className='form-control' type="text" placeholder='Enter your product name' />
+                        <input onChange={(e) => setProductName(e.target.value)} className='form-control' type="text" placeholder='Enter your product name' value={productName} />
 
                         <label className='mt-2' htmlFor="">Product Price</label>
-                        <input onChange={(e) => setProductPrice(e.target.value)} className='form-control' type="number" placeholder='Enter your product name' />
+                        <input onChange={(e) => setProductPrice(e.target.value)} className='form-control' type="number" placeholder='Enter your product name' value={productPrice} />
 
                         <label className='mt-2'>Choose category</label>
-                        <select onChange={(e) => setProductCategory(e.target.value)} className='form-control'>
+                        <select onChange={(e) => setProductCategory(e.target.value)} className='form-control' value={productCategory}>
                             <option value="plants">Plants</option>
                             <option value="electronics">Electronics</option>
                             <option value="gadgets">Gadgets</option>
@@ -53,7 +66,7 @@ const AdminUpdate = () => {
                         </select>
 
                         <label className='mt-2'>Enter description</label>
-                        <textarea onChange={(e) => setProductDescription(e.target.value)} className='form-control'></textarea>
+                        <textarea onChange={(e) => setProductDescription(e.target.value)} className='form-control' value={productDescription}></textarea>
 
                         <label className='mt-2'>Choose product Image</label>
                         <input onChange={handleImage} type="file" className='form-control' />
@@ -63,7 +76,7 @@ const AdminUpdate = () => {
                     </form>
                     <div className='image section'>
                         <h6>Old Image Preview</h6>
-                        <img className='object-fit-cover rounded-4' height={'300px'} width={'300px'} src="https://th.bing.com/th/id/R.57a41be7ea1bc7555ad2a3d78132f4b7?rik=GniDjG8Rs5OMww&pid=ImgRaw&r=0" alt="" />
+                        <img className='object-fit-cover rounded-4' height={'300px'} width={'300px'} src={`http://localhost:5000/products/${oldImage}`} />
 
                         {
                             previewNewImage && <div>

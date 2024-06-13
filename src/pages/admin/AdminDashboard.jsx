@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { createProductApi, getAllProducts } from "../../apis/Api";
+import { createProductApi, deleteSingleProductApi, getAllProducts } from "../../apis/Api";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
@@ -9,7 +9,7 @@ const AdminDashboard = () => {
   // logic for get products
   const [products, setProducts] = useState([])
   // Hit API(Get all product) Auto->useEffect(list of products)
-  useEffect(() => {
+  const getProduct = () => {
     getAllProducts().then((res) => {
       //success, message, list of products(products)
       setProducts(res.data.products)
@@ -17,6 +17,11 @@ const AdminDashboard = () => {
     }).catch((error) => {
       console.log(error)
     })
+
+  }
+  useEffect(() => {
+    getProduct()
+
 
   }, [])
   console.log(products)
@@ -43,6 +48,35 @@ const AdminDashboard = () => {
     setpreviewImage(URL.createObjectURL(file))
   }
 
+  // delete product
+  const handleDelete = (id) => {
+    const confirmDialog = window.confirm("Are you sure you want to delete?")
+    if (confirmDialog) {
+      // delete product
+      deleteSingleProductApi(id).then((res) => {
+        if (res.status === 201) {
+          toast.success(res.data.message)
+          getProduct()
+        } else {
+          toast.error('something went wrong in frontend!')
+        }
+      }).catch((error) => {
+        if (error.response) {
+          if (error.response.status === 400) {
+            toast.error(error.res.data.message)
+          }
+          //space for 401 error
+        } else if (error.response.status === 500) {
+          toast.error('internal server error')
+        } else {
+          toast.error('no response')
+        }
+
+
+      });
+
+    }
+  }
   //handel submit
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -62,6 +96,8 @@ const AdminDashboard = () => {
     createProductApi(formData).then((res) => {
       if (res.status === 201) {
         toast.success(res.data.message)
+        getProduct()
+        // window.location.reload()
       } else {
         toast.error('something went wrong in frontend!')
       }
@@ -146,7 +182,7 @@ const AdminDashboard = () => {
         <div className="table mt-3">
           <thead className="table-dark">
             <tr>
-              <th> Product Image</th>
+              <th>Product Image</th>
               <th>Product  Name</th>
               <th>Product Price</th>
               <th>Product Description</th>
@@ -168,7 +204,7 @@ const AdminDashboard = () => {
                   <td>
                     <div className="button-group" role='group'>
                       <Link to={`/admin/update/${singleProduct._id}`} className="btn btn-success">Edit</Link>
-                      <Link className="btn btn-danger">Delete</Link>
+                      <button onClick={() => handleDelete(singleProduct._id)} className="btn btn-danger">Delete</button>
                     </div>
                   </td>
                 </tr>
