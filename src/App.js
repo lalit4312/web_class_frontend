@@ -32,6 +32,7 @@ function App() {
         {/* Profile- make a page and route */}
         <Route element={<UserRoutes />}>
           <Route path='/profile' element={<Profile />}></Route>
+          <Route path='/home' element={<Homepage />} />
         </Route>
 
 
@@ -39,7 +40,10 @@ function App() {
         <Route element={<AdminRoutes />}>
           <Route path='/admin/dashboard' element={<AdminDashboard />} />
           <Route path='/admin/update/:id' element={<AdminUpdate />} />
+
+
         </Route>
+
       </Routes>
     </Router>
   );

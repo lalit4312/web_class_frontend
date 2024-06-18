@@ -10,11 +10,14 @@ const Api = axios.create({
 });
 
 //creating authorization config
-const config={
-    headers:{
-        'authorization':`Bearer ${localStorage.getItem('token')}`
+const config = {
+    headers: {
+        'authorization': `Bearer ${localStorage.getItem('token')}`
     }
 }
+
+
+
 
 //creating test api
 export const testApi = () => Api.get('/test')
@@ -29,13 +32,17 @@ export const loginUserApi = (data) => Api.post('/api/user/login', data)
 export const createProductApi = (data) => Api.post('/api/product/create', data)
 
 // fetch all products
-export const getAllProducts = () => Api.get('/api/product/get_all_products',config)
+export const getAllProducts = () => Api.get('/api/product/get_all_products', config)
 
 // fetch single product
-export const singleProductApi = (id) => Api.get(`api/product/get_single_product/${id}`,config);
+export const singleProductApi = (id) => Api.get(`api/product/get_single_product/${id}`, config);
 
 // delete single product
 export const deleteSingleProductApi = (id) => Api.delete(`api/product/delete_product/${id}`)
+
+// update
+export const updateSingleProductApi = (id, data) => Api.put(`api/product/update_product/${id}`, data, config)
+
 
 
 export const loginApi = () => Api.get('/login')

@@ -62,12 +62,12 @@ const AdminDashboard = () => {
         }
       }).catch((error) => {
         if (error.response) {
-          if (error.response.status === 400) {
+          if (error.response.status === 500) {
             toast.error(error.res.data.message)
           }
           //space for 401 error
-        } else if (error.response.status === 500) {
-          toast.error('internal server error')
+        } else if (error.response.status === 400) {
+          toast.error(error.res.data.message)
         } else {
           toast.error('no response')
         }
