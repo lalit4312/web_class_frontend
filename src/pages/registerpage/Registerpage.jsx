@@ -14,6 +14,7 @@ const Registerpage = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [phone, setPhone] = useState('')
 
     //state for error
     const [firstNameError, setFirstNameError] = useState('')
@@ -21,6 +22,7 @@ const Registerpage = () => {
     const [emailError, setEmailError] = useState('')
     const [passwordError, setPasswordError] = useState('')
     const [confirmPasswordError, setFConfirmPasswordError] = useState('')
+    const [phoneError, setPhoneError] = useState('')
 
     //make a function to save a state
     const handleFirstname = (e) => {
@@ -38,6 +40,9 @@ const Registerpage = () => {
     }
     const handleConfirmPassword = (e) => {
         setConfirmPassword(e.target.value)
+    }
+    const handlePhone = (e) => {
+        setPhone(e.target.value)
     }
 
     //validation
@@ -63,6 +68,10 @@ const Registerpage = () => {
             setFConfirmPasswordError('please enter ConfirmPassword')
             isValid = false;
         }
+        if (phone.trim() === '') {
+            setPhoneError('Phone number is required')
+            isValid = false;
+        }
         return isValid;
     }
 
@@ -81,12 +90,13 @@ const Registerpage = () => {
             "firstName": firstName,
             "lastName": lastName,
             "email": email,
-            "password": password
+            "password": password,
+            "phone": phone
         }
         registerUserApi(data).then((res) => {
             //success: true/false, message
 
-            if (res.data.success == false) {
+            if (res.data.success === false) {
                 toast.error(res.data.message)
             } else {
                 toast.success(res.data.message)
@@ -122,6 +132,14 @@ const Registerpage = () => {
                     {
                         emailError && <p className="text-danger">{emailError}</p>
                     }
+
+                    <label className='mt-2'>Phone Number:{phone}</label>
+                    <input onChange={handlePhone} type="number" className='form-control' placeholder='Enter your phone number'></input>
+
+                    {
+                        phoneError && <p className="text-danger">{phoneError}</p>
+                    }
+
 
                     <label className='mt-2'>Password:{password}</label>
                     <input onChange={handlePassword} type="text" className='form-control' placeholder='Enter your password'></input>

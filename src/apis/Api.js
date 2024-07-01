@@ -38,11 +38,16 @@ export const getAllProducts = () => Api.get('/api/product/get_all_products', con
 export const singleProductApi = (id) => Api.get(`api/product/get_single_product/${id}`, config);
 
 // delete single product
-export const deleteSingleProductApi = (id) => Api.delete(`api/product/delete_product/${id}`)
+export const deleteSingleProductApi = (id) => Api.delete(`api/product/delete_product/${id}`, config)
 
 // update
 export const updateSingleProductApi = (id, data) => Api.put(`api/product/update_product/${id}`, data, config)
 
+// Forgot password
+export const forgotPasswordApi = (data) => Api.post('api/user/forgot_password', data)
+
+// verify 
+export const verifyOtpApi = (data) => Api.post('api/user/verify_otp', data)
 
 
 export const loginApi = () => Api.get('/login')
